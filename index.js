@@ -1,11 +1,16 @@
-// Shared JS for both game and review pages
 
-// Detect which page we're on
 const isGamePage = document.getElementById("game") !== null;
 const isReviewPage = document.getElementById("review-summary") !== null;
 
 let rounds = [];
 let maxRounds = 10;
+
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Enter") {
+    const submitBtn = document.getElementById("submit");
+    if (submitBtn) submitBtn.click();
+  }
+})
 
 if (isGamePage) {
   const canvas = document.getElementById("game");
@@ -31,6 +36,8 @@ if (isGamePage) {
   let round = 1;
   let guessesThisRound = 0;
   let gameOver = false;
+
+
 
   async function loadPokemon() {
     pixels = 4;
@@ -96,7 +103,7 @@ if (isGamePage) {
 
     guessesThisRound++;
     if (guess === answer) {
-      showMessage(`Correct! It was ${answer.toUpperCase()} 🎉`, "success");
+      showMessage(`Correct! It was ${answer.toUpperCase()}`, "success");
       rounds.push({ correct: true, guesses: guessesThisRound });
       gameOver = true;
       nextRound();
@@ -111,7 +118,6 @@ if (isGamePage) {
       round++;
       loadPokemon();
     } else {
-      // Save scores in localStorage and go to review page
       localStorage.setItem("rounds", JSON.stringify(rounds));
       window.location.href = "review.html";
     }
@@ -130,7 +136,6 @@ if (isGamePage) {
 
 }
 
-// Review page logic
 if (isReviewPage) {
   const correctEl = document.getElementById("correct");
   const totalGuessesEl = document.getElementById("total-guesses");
