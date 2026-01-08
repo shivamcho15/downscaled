@@ -1,25 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Game Review</title>
-<link rel="stylesheet" href="review.css">
+  <meta charset="UTF-8">
+  <title>Game Review</title>
+  <link rel="stylesheet" href="review.css">
 </head>
 <body>
+  <div class="container">
+    <h1>Game Summary</h1>
 
-<div class="review-container">
-  <h1>Game Review</h1>
+    <div id="results"></div>
 
-  <div id="review-summary">
-    <p>Rounds Correct: <span id="correct">0</span> / 10</p>
-    <p>Total Guesses: <span id="total-guesses">0</span></p>
-    <p>Average Guesses per Round: <span id="avg-guesses">0</span></p>
+    <button id="play-again">Play Again</button>
   </div>
 
-  <button id="play-again">Play Again</button>
-</div>
-
-<script src="index.js"></script>
+  <script src="main.js"></script>
 </body>
 </html>

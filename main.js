@@ -24,7 +24,36 @@ document.addEventListener("DOMContentLoaded", () => {
     };
   });
 });
+document.addEventListener("DOMContentLoaded", () => {
+  const resultsDiv = document.getElementById("results");
+  const playAgainBtn = document.getElementById("play-again");
 
+  if (!resultsDiv || !playAgainBtn) return;
+
+  const data = JSON.parse(localStorage.getItem("gameResults"));
+
+  if (!data) {
+    resultsDiv.innerHTML = "<p>No game data found.</p>";
+    return;
+  }
+
+  const score = Math.max(
+    0,
+    data.correctRounds * 100 - data.totalGuesses * 5
+  );
+
+  resultsDiv.innerHTML = `
+    <p>Category: ${data.category.toUpperCase()}</p>
+    <p>Correct Rounds: ${data.correctRounds} / ${data.totalRounds}</p>
+    <p>Total Guesses: ${data.totalGuesses}</p>
+    <p><strong>Score: ${score}</strong></p>
+  `;
+
+  playAgainBtn.onclick = () => {
+    localStorage.removeItem("gameResults");
+    window.location.href = "index.html";
+  };
+});
 
 
 
@@ -162,8 +191,18 @@ if (isGamePage) {
       round++;
       loadData();
     } else {
-      localStorage.setItem("rounds", JSON.stringify(rounds));
-      window.location.href = "review.html";
+      const correctRounds = rounds.filter(r => r.correct).length;
+  const totalGuesses = rounds.reduce((sum, r) => sum + r.guesses, 0);
+
+  const results = {
+    totalRounds: maxRounds,
+    correctRounds,
+    totalGuesses,
+    category
+  };
+
+  localStorage.setItem("gameResults", JSON.stringify(results));
+  window.location.href = "review.html";
     }
   }
 
