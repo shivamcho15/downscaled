@@ -1,36 +1,21 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <link rel="stylesheet" href="game.css" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Downscaled</title>
+  <meta charset="UTF-8">
+  <title>Downscaled</title>
+  <link rel="stylesheet" href="index.css">
 </head>
 <body>
-    <div class="game">
-        <div id="hud">
-            <div id="round">Round: 1</div>
-            <div id="resolution">Resolution: 4px</div>
-                <div id="guesses">Guesses: 0</div>
+  <div class="container">
+    <h1>Downscaled</h1>
+    <p>Choose a category</p>
 
-        </div>
-
-        <canvas id="game" width="400" height="400"></canvas>
-
-        <div class="controls">
-            <button id="next">Reveal more</button>
-        </div>
-
-        <div class="guess">
-            <input id="guess" placeholder="Guess the Pokémon" />
-            <button id="submit">Guess</button>
-        </div>
-
-        <div id="message-container"></div>
-
+    <div class="categories">
+      <button data-category="pokemon">Pokémon</button>
+      <button data-category="flags">Flags</button>
     </div>
+  </div>
 
-    <script src="index.js"></script>
-
+  <script src="main.js"></script>
 </body>
 </html>

@@ -5,6 +5,30 @@ const isReviewPage = document.getElementById("review-summary") !== null;
 let rounds = [];
 let maxRounds = 10;
 
+const buttons = document.querySelectorAll("[data-category]");
+
+const category = localStorage.getItem("category");
+
+if (!category) {
+  window.location.href = "index.html";
+}
+document.addEventListener("DOMContentLoaded", () => {
+  const buttons = document.querySelectorAll("[data-category]");
+
+  if (buttons.length === 0) return;
+
+  buttons.forEach(button => {
+    button.onclick = () => {
+      localStorage.setItem("category", button.dataset.category);
+      window.location.href = "game.html";
+    };
+  });
+});
+
+
+
+
+
 document.addEventListener("keydown", (e) => {
   if (e.key === "Enter") {
     const submitBtn = document.getElementById("submit");
@@ -13,6 +37,10 @@ document.addEventListener("keydown", (e) => {
 })
 
 if (isGamePage) {
+  if(!category) {
+    window.location.href = "index.html";
+  }
+
   const canvas = document.getElementById("game");
   const ctx = canvas.getContext("2d");
   ctx.imageSmoothingEnabled = false;
@@ -37,25 +65,41 @@ if (isGamePage) {
   let guessesThisRound = 0;
   let gameOver = false;
 
+  async function getRoundData() {
+  if (category === "pokemon") {
+    const id = Math.floor(Math.random() * 898) + 1;
+    return {
+      answer: (await fetch(`https://pokeapi.co/api/v2/pokemon/${id}`).then(r => r.json())).name,
+      image: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${id}.png`
+    };
+  }
+
+  if (category === "flags") {
+    const all = await fetch("https://restcountries.com/v3.1/all?fields=name,flags").then(r => r.json());
+    const country =  all[Math.floor(Math.random() * all.length)];
+    return {
+      answer: country.name.common.toLowerCase(),
+      image: country.flags.png
+    };
+  }
+}
 
 
-  async function loadPokemon() {
+  async function loadData() {
     pixels = 4;
     guessesThisRound = 0;
     gameOver = false;
     guessInput.value = "";
     updateHUD();
 
-    const id = Math.floor(Math.random() * 151) + 1;
-    const res = await fetch(`https://pokeapi.co/api/v2/pokemon/${id}`);
-    const data = await res.json();
 
-    answer = data.name.toLowerCase();
+
 
     img = new Image();
     img.crossOrigin = "anonymous";
-    img.src = data.sprites.other["official-artwork"].front_default;
-
+    const roundData = await getRoundData();
+    answer = roundData.answer;
+    img.src = roundData.image;
     img.onload = () => {
       maxPixels = Math.min(img.width, img.height);
       draw();
@@ -116,7 +160,7 @@ if (isGamePage) {
   function nextRound() {
     if (round < maxRounds) {
       round++;
-      loadPokemon();
+      loadData();
     } else {
       localStorage.setItem("rounds", JSON.stringify(rounds));
       window.location.href = "review.html";
@@ -132,7 +176,7 @@ if (isGamePage) {
     message.addEventListener("click",()=>{ if(messageContainer.contains(message)) messageContainer.removeChild(message); });
   }
 
-  loadPokemon();
+  loadData();
 
 }
 
@@ -150,9 +194,9 @@ if (isReviewPage) {
   correctEl.textContent = totalCorrect;
   totalGuessesEl.textContent = totalGuesses;
   avgGuessesEl.textContent = avgGuesses;
-
+  
   playAgainBtn.onclick = () => {
     localStorage.removeItem("rounds");
-    window.location.href = "game.html";
+    window.location.href = "index.html";
   };
 }
