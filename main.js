@@ -3,6 +3,7 @@ const isGamePage = document.getElementById("game") !== null;
 const isReviewPage = document.getElementById("review-summary") !== null;
 
 let rounds = [];
+let score = 0;
 let maxRounds = 10;
 
 const buttons = document.querySelectorAll("[data-category]");
@@ -37,16 +38,11 @@ document.addEventListener("DOMContentLoaded", () => {
     return;
   }
 
-  const score = Math.max(
-    0,
-    data.correctRounds * 100 - data.totalGuesses * 5
-  );
-
   resultsDiv.innerHTML = `
     <p>Category: ${data.category.toUpperCase()}</p>
     <p>Correct Rounds: ${data.correctRounds} / ${data.totalRounds}</p>
     <p>Total Guesses: ${data.totalGuesses}</p>
-    <p><strong>Score: ${score}</strong></p>
+    <p><strong>Score: ${localStorage.getItem("score")}</strong></p>
   `;
 
   playAgainBtn.onclick = () => {
@@ -69,6 +65,8 @@ if (isGamePage) {
   if(!category) {
     window.location.href = "index.html";
   }
+  score = 0;
+
 
   const canvas = document.getElementById("game");
   const ctx = canvas.getContext("2d");
@@ -138,7 +136,7 @@ if (isGamePage) {
   function updateHUD() {
     roundEl.textContent = `Round: ${round} / ${maxRounds}`;
     resolutionEl.textContent = `Resolution: ${pixels}px`;
-    guessesEl.textContent = `Guesses: ${guessesThisRound}`;
+    guessesEl.textContent = `Score: ${score}`;
   }
 
   function draw() {
@@ -165,6 +163,9 @@ if (isGamePage) {
     if (gameOver) return;
     if (pixels < maxPixels) {
       pixels *= 2;
+      score -= 10;
+      console.log(score)
+
       draw();
     }
   };
@@ -177,11 +178,15 @@ if (isGamePage) {
     guessesThisRound++;
     if (guess === answer) {
       showMessage(`Correct! It was ${answer.toUpperCase()}`, "success");
+      score+=100
+      console.log(score)
       rounds.push({ correct: true, guesses: guessesThisRound });
       gameOver = true;
       nextRound();
     } else {
       showMessage("Nope, try again!", "error");
+      score -= 5
+      console.log(score)
     }
     draw();
   };
@@ -202,6 +207,7 @@ if (isGamePage) {
   };
 
   localStorage.setItem("gameResults", JSON.stringify(results));
+  localStorage.setItem("score",score)
   window.location.href = "review.html";
     }
   }
@@ -236,6 +242,7 @@ if (isReviewPage) {
   
   playAgainBtn.onclick = () => {
     localStorage.removeItem("rounds");
+    localStorage.removeItem("score");
     window.location.href = "index.html";
   };
 }
