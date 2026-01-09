@@ -10,7 +10,7 @@ const buttons = document.querySelectorAll("[data-category]");
 
 const category = localStorage.getItem("category");
 
-if (!category) {
+if (isGamePage && !category) {
   window.location.href = "index.html";
 }
 document.addEventListener("DOMContentLoaded", () => {
