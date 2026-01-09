@@ -13,6 +13,29 @@ const category = localStorage.getItem("category");
 if (isGamePage && !category) {
   window.location.href = "index.html";
 }
+
+const spawnPoints = (amount) => {
+  const container = document.getElementById("points");
+const game = document.getElementById("game");
+
+  const el = document.createElement("p");
+  el.textContent = amount > 0 ? `+${amount}` : `${amount}`;
+  const gameRect = game.getBoundingClientRect();
+  const containerRect = container.getBoundingClientRect();
+
+  const x = gameRect.right - containerRect.left + 12;
+  const y = gameRect.top - containerRect.top;
+
+  el.classList.add("falling");
+  el.style.left = `${x}px`;
+  el.style.top = `${y}px`;
+  el.style.fontSize = "20px";
+  el.style.color = amount > 0 ? "limegreen" : "red";
+
+  container.appendChild(el);
+
+  el.addEventListener("animationend", () => el.remove());
+}
 document.addEventListener("DOMContentLoaded", () => {
   const buttons = document.querySelectorAll("[data-category]");
 
@@ -47,6 +70,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   playAgainBtn.onclick = () => {
     localStorage.removeItem("gameResults");
+    localStorage.removeItem("score");
     window.location.href = "index.html";
   };
 });
@@ -164,6 +188,7 @@ if (isGamePage) {
     if (pixels < maxPixels) {
       pixels *= 2;
       score -= 10;
+      spawnPoints(-10)
       console.log(score)
 
       draw();
@@ -178,6 +203,7 @@ if (isGamePage) {
     guessesThisRound++;
     if (guess === answer) {
       showMessage(`Correct! It was ${answer.toUpperCase()}`, "success");
+      spawnPoints(100)
       score+=100
       console.log(score)
       rounds.push({ correct: true, guesses: guessesThisRound });
@@ -186,6 +212,7 @@ if (isGamePage) {
     } else {
       showMessage("Nope, try again!", "error");
       score -= 5
+      spawnPoints(-5)
       console.log(score)
     }
     draw();
