@@ -13,25 +13,35 @@ const category = localStorage.getItem("category");
 if (isGamePage && !category) {
   window.location.href = "index.html";
 }
-function spawnParticles(x, y, count = 20) {
+function spawnConfetti(x, y, count = 30) {
   const container = document.getElementById("points");
 
   for (let i = 0; i < count; i++) {
-    const p = document.createElement("div");
-    p.classList.add("particle");
+    const c = document.createElement("div");
+    c.classList.add("confetti");
 
-    const dx = (Math.random() - 0.5) * 400; 
-    const dy = (Math.random() - 1) * 400; 
+    // random horizontal drift (-150 to +150 px)
+    const dx = (Math.random() - 0.5) * 300;
+    // fall distance (300 to 600 px downward)
+    const dy = Math.random() * 300 + 300;
+    // random rotation (360 to -360 degrees)
+    const rotation = (Math.random() - 0.5) * 720;
+    // random duration (1.5 to 3 s)
+    const duration = Math.random() * 1.5 + 1.5;
 
-    p.style.left = `${x}px`;
-    p.style.top = `${y}px`;
+    c.style.left = `${x}px`;
+    c.style.top = `${y}px`;
 
-    p.style.setProperty("--dx", `${dx}px`);
-    p.style.setProperty("--dy", `${dy}px`);
+    c.style.setProperty("--xStart", "0px");
+    c.style.setProperty("--yStart", "0px");
+    c.style.setProperty("--dx", `${dx}px`);
+    c.style.setProperty("--dy", `${dy}px`);
+    c.style.setProperty("--rotation", `${rotation}deg`);
+    c.style.setProperty("--duration", `${duration}s`);
 
-    container.appendChild(p);
+    container.appendChild(c);
 
-    p.addEventListener("animationend", () => p.remove());
+    c.addEventListener("animationend", () => c.remove());
   }
 }
 const spawnPoints = (amount) => {
@@ -39,12 +49,12 @@ const spawnPoints = (amount) => {
 const game = document.getElementById("game");
 
   if(amount>0){
-      const canvasRect = document.getElementsByTagName("canvas")[0].getBoundingClientRect();
-const containerRect = container.getBoundingClientRect();
+      const rect = document.getElementsByTagName("canvas")[0].getBoundingClientRect();
+const containerRect = document.getElementById("points").getBoundingClientRect();
+const spawnX = rect.left - containerRect.left + rect.width / 2;
+const spawnY = rect.top - containerRect.top + rect.height / 2;
 
-const spawnX = canvasRect.left - containerRect.left + canvasRect.width / 2;
-const spawnY = canvasRect.top - containerRect.top + canvasRect.height / 2;
-      spawnParticles(spawnX, spawnY, 15);
+spawnConfetti(spawnX, spawnY, 40); // spawn 40 pieces of confetti
   }
 
   const el = document.createElement("p");
