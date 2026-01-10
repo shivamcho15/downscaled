@@ -13,48 +13,51 @@ const category = localStorage.getItem("category");
 if (isGamePage && !category) {
   window.location.href = "index.html";
 }
-function spawnConfetti(x, y, count = 30) {
+function spawnConfettiExplosion(x, y, count = 40) {
   const container = document.getElementById("points");
+  const colors = ["#ff0","#0f0","#0ff","#f0f","#f00","#ffa500"];
 
   for (let i = 0; i < count; i++) {
     const c = document.createElement("div");
     c.classList.add("confetti");
 
-    // random horizontal drift (-150 to +150 px)
-    const dx = (Math.random() - 0.5) * 300;
-    // fall distance (300 to 600 px downward)
-    const dy = Math.random() * 300 + 300;
-    // random rotation (360 to -360 degrees)
-    const rotation = (Math.random() - 0.5) * 720;
-    // random duration (1.5 to 3 s)
-    const duration = Math.random() * 1.5 + 1.5;
+    // horizontal drift constant
+    const dx = (Math.random() - 0.5) * 300 + "px";  
+    // vertical movement (initial explosion up, then fall down)
+    const dy = (-Math.random() * 100 - 50 + Math.random() * 400) + "px";  
 
-    c.style.left = `${x}px`;
-    c.style.top = `${y}px`;
+    const rotationStart = Math.random() * 360 + "deg";
+    const rotationDelta = Math.random() * 720 - 360 + "deg";
+    const duration = (Math.random() * 1.5 + 1.5) + "s";
 
-    c.style.setProperty("--xStart", "0px");
-    c.style.setProperty("--yStart", "0px");
-    c.style.setProperty("--dx", `${dx}px`);
-    c.style.setProperty("--dy", `${dy}px`);
-    c.style.setProperty("--rotation", `${rotation}deg`);
-    c.style.setProperty("--duration", `${duration}s`);
+    c.style.left = x + "px";
+    c.style.top = y + "px";
+    c.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+
+    c.style.setProperty("--dx", dx);
+    c.style.setProperty("--dy", dy);
+    c.style.setProperty("--rotationStart", rotationStart);
+    c.style.setProperty("--rotationDelta", rotationDelta);
+    c.style.setProperty("--duration", duration);
 
     container.appendChild(c);
-
     c.addEventListener("animationend", () => c.remove());
   }
 }
+
+
 const spawnPoints = (amount) => {
   const container = document.getElementById("points");
 const game = document.getElementById("game");
 
   if(amount>0){
-      const rect = document.getElementsByTagName("canvas")[0].getBoundingClientRect();
-const containerRect = document.getElementById("points").getBoundingClientRect();
-const spawnX = rect.left - containerRect.left + rect.width / 2;
-const spawnY = rect.top - containerRect.top + rect.height / 2;
+      const canvasRect = document.getElementsByTagName("canvas")[0].getBoundingClientRect();
+      const containerRect = document.getElementById("points").getBoundingClientRect();
 
-spawnConfetti(spawnX, spawnY, 40); // spawn 40 pieces of confetti
+      const spawnX = canvasRect.left - containerRect.left + canvasRect.width / 2;
+      const spawnY = canvasRect.top - containerRect.top + canvasRect.height / 2;
+
+spawnConfettiExplosion(spawnX, spawnY, 50);
   }
 
   const el = document.createElement("p");

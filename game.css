@@ -177,27 +177,24 @@ input:focus {
     transform: translateX(100%);
   }
 }
-
 .confetti {
   position: absolute;
   width: 8px;
   height: 8px;
-  background-color: gold;
+  border-radius: 2px;
   pointer-events: none;
   opacity: 1;
-  transform: rotate(0deg);
+  transform: translate(0px, 0px) rotate(0deg);
   animation: confettiFall var(--duration) linear forwards;
-  border-radius: 2px;
-  z-index: 50;
 }
 
 @keyframes confettiFall {
   0% {
-    transform: translate(var(--xStart), var(--yStart)) rotate(0deg);
+    transform: translate(0px, 0px) rotate(var(--rotationStart));
     opacity: 1;
   }
   100% {
-    transform: translate(calc(var(--xStart) + var(--dx)), calc(var(--yStart) + var(--dy))) rotate(var(--rotation));
+    transform: translate(var(--dx), var(--dy)) rotate(calc(var(--rotationStart) + var(--rotationDelta)));
     opacity: 0;
   }
 }
