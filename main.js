@@ -13,10 +13,39 @@ const category = localStorage.getItem("category");
 if (isGamePage && !category) {
   window.location.href = "index.html";
 }
+function spawnParticles(x, y, count = 20) {
+  const container = document.getElementById("points");
 
+  for (let i = 0; i < count; i++) {
+    const p = document.createElement("div");
+    p.classList.add("particle");
+
+    const dx = (Math.random() - 0.5) * 400; 
+    const dy = (Math.random() - 1) * 400; 
+
+    p.style.left = `${x}px`;
+    p.style.top = `${y}px`;
+
+    p.style.setProperty("--dx", `${dx}px`);
+    p.style.setProperty("--dy", `${dy}px`);
+
+    container.appendChild(p);
+
+    p.addEventListener("animationend", () => p.remove());
+  }
+}
 const spawnPoints = (amount) => {
   const container = document.getElementById("points");
 const game = document.getElementById("game");
+
+  if(amount>0){
+      const canvasRect = document.getElementsByTagName("canvas")[0].getBoundingClientRect();
+const containerRect = container.getBoundingClientRect();
+
+const spawnX = canvasRect.left - containerRect.left + canvasRect.width / 2;
+const spawnY = canvasRect.top - containerRect.top + canvasRect.height / 2;
+      spawnParticles(spawnX, spawnY, 15);
+  }
 
   const el = document.createElement("p");
   el.textContent = amount > 0 ? `+${amount}` : `${amount}`;
